@@ -1,0 +1,12 @@
+// Prisma schema placeholder.
+// Configure datasource to point at Supabase Postgres instance and model tables defined in supabase/schema.sql.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Define models mirroring the SQL schema before running `prisma db push` or `prisma migrate`.

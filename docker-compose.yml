@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  app:
+    image: ${IMAGE_NAME:-ghcr.io/your-org/inventory-manager-app}:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: runner
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_APP_URL=https://${DOMAIN}
+    restart: unless-stopped
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  backup:
+    image: ghcr.io/supabase/cli:1.154.3
+    profiles: ["backup"]
+    env_file:
+      - .env
+    environment:
+      - SUPABASE_ACCESS_TOKEN
+      - SUPABASE_PROJECT_REF
+      - DATABASE_URL
+      - BACKUP_SCHEDULE
+    volumes:
+      - ./backups:/backups
+    command: ["tail", "-f", "/dev/null"]
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.db-backup.schedule: "${BACKUP_SCHEDULE}"
+      ofelia.job-exec.db-backup.command: >-
+        sh -c "mkdir -p /backups && supabase db dump --project-ref $SUPABASE_PROJECT_REF --db-url $DATABASE_URL --schema public --file /backups/backup-$(date +%Y%m%d%H%M).sql"
+
+  cron:
+    image: mcuadros/ofelia:latest
+    profiles: ["backup"]
+    depends_on:
+      - backup
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: daemon --docker
+
+volumes:
+  caddy_data:
+  caddy_config:

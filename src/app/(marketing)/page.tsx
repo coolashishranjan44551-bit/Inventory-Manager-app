@@ -1,5 +1,3 @@
-'use client';
-
 export default function MarketingPage() {
   return (
     <section className="space-y-4">

@@ -7,9 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "^5.18.0",
     "@tanstack/react-query": "^5.45.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.387.0",
@@ -21,6 +22,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "prisma": "^5.18.0",
     "@types/node": "^20.14.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

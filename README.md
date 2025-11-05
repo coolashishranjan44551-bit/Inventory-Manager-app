@@ -107,6 +107,30 @@ root/
 6. **Automations**
    - Configure Vercel Cron or Supabase Edge Functions for scheduled tasks (e.g., nightly reports, cleanup).
 
+## Kubernetes Deployment (Optional Self-Hosting)
+
+The repository includes a multi-stage Dockerfile that produces a minimal runtime image using Next.js' standalone output. Build a
+ container image and push it to your registry:
+
+```bash
+docker build -t registry.example.com/inventory-manager:latest .
+docker push registry.example.com/inventory-manager:latest
+```
+
+Example Kubernetes manifests live in [`k8s/`](k8s/). Apply the configuration after creating the ConfigMap and Secret with your S
+upabase credentials and public URLs:
+
+```bash
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret-example.yaml  # rename to secret.yaml and replace placeholders first
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/ingress.yaml
+```
+
+The Deployment exposes the built-in health check at `/api/health` for readiness/liveness probes and publishes port 3000 via a C
+lusterIP Service. Customize the Ingress host, TLS settings, replica count, and resource requests to fit your cluster.
+
 ## PWA & Printing Setup
 - **PWA**: Integrate `next-pwa` to compile a service worker handling asset/runtime caching. Use IndexedDB for offline data and Background Sync to flush queued orders and stock adjustments.
 - **Offline UX**: Display connectivity banner, allow offline creation of orders, and reconcile when online. Provide manual conflict resolution for duplicate entries.

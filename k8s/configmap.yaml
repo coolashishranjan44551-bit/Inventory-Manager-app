@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inventory-manager-config
+  labels:
+    app: inventory-manager
+data:
+  NEXT_PUBLIC_APP_NAME: "Inventory Cafe"
+  NEXT_PUBLIC_SUPABASE_URL: "https://your-supabase-project.supabase.co"

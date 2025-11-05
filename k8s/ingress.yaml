@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: inventory-manager
+  labels:
+    app: inventory-manager
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  rules:
+    - host: inventory.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: inventory-manager
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - inventory.example.com
+      secretName: inventory-manager-tls

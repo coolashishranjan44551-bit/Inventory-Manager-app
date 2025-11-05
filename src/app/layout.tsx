@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import '../styles/globals.css';
 import { ReactNode } from 'react';
 import { ThemeProvider } from '../components/theme-provider';
 import { QueryProvider } from '../components/query-provider';
-import { cn } from '../utils/cn';
 import { SiteHeader } from '../components/site-header';
 import { Toaster } from '../components/ui/toaster';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Inventory & Café Manager',
@@ -23,7 +19,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-slate-50', inter.className)}>
+      <body className="min-h-screen bg-slate-50 font-sans">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <QueryProvider>
             <div className="flex min-h-screen flex-col">
